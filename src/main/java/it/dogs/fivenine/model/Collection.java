@@ -1,4 +1,4 @@
-package it.dogs.fivenine.entities;
+package it.dogs.fivenine.model;
 
 import lombok.Data;
 import jakarta.persistence.*;

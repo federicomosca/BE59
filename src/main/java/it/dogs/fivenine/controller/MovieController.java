@@ -1,7 +1,7 @@
-package it.dogs.fivenine.controllers;
+package it.dogs.fivenine.controller;
 
-import it.dogs.fivenine.entities.Movie;
-import it.dogs.fivenine.services.MovieService;
+import it.dogs.fivenine.model.Movie;
+import it.dogs.fivenine.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +21,4 @@ public class MovieController {
     public Movie getMovieById(@PathVariable Long id) {
         return movieService.getMovieById(id);
     }
-
-    // ... other endpoints
 }

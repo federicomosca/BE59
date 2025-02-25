@@ -1,6 +1,6 @@
-package it.dogs.fivenine.repositories;
+package it.dogs.fivenine.repository;
 
-import it.dogs.fivenine.entities.User;
+import it.dogs.fivenine.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

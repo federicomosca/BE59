@@ -1,8 +1,9 @@
-package it.dogs.fivenine.entities;
+package it.dogs.fivenine.model;
 
 import lombok.Data;
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @Entity
@@ -24,5 +25,8 @@ public class User {
 
     @Column(name = "registration_date")
     private Date registrationDate;
+
+    @OneToMany
+    private Set<Collection> collections;
 
 }

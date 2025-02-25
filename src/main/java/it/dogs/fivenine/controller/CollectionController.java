@@ -1,7 +1,7 @@
-package it.dogs.fivenine.controllers;
+package it.dogs.fivenine.controller;
 
-import it.dogs.fivenine.entities.Collection;
-import it.dogs.fivenine.services.CollectionService;
+import it.dogs.fivenine.model.Collection;
+import it.dogs.fivenine.service.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +21,4 @@ public class CollectionController {
     public Collection getCollectionById(@PathVariable Long id) {
         return collectionService.getCollectionById(id);
     }
-
-    // ... other endpoints
 }

@@ -1,4 +1,4 @@
-package it.dogs.fivenine.entities;
+package it.dogs.fivenine.model;
 
 import lombok.Data;
 import jakarta.persistence.*;
@@ -20,5 +20,11 @@ public class Movie {
 
     @Column(name = "release_date")
     private LocalDate releaseDate;
+
+    @ManyToOne
+    private Director director;
+
+    @ManyToOne
+    private Writer writer;
 
 }

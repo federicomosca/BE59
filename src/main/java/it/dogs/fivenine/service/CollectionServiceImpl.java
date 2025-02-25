@@ -1,15 +1,19 @@
-package it.dogs.fivenine.services;
+package it.dogs.fivenine.service;
 
-import it.dogs.fivenine.entities.Collection;
-import it.dogs.fivenine.repositories.CollectionRepository;
+import it.dogs.fivenine.model.Collection;
+import it.dogs.fivenine.repository.CollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CollectionService {
+public class CollectionServiceImpl implements CollectionService {
+
+    private CollectionRepository collectionRepository;
 
     @Autowired
-    private CollectionRepository collectionRepository;
+    public CollectionServiceImpl(CollectionRepository collectionRepository) {
+        this.collectionRepository = collectionRepository;
+    }
 
     public Collection createCollection(Collection collection) {
         return collectionRepository.save(collection);
