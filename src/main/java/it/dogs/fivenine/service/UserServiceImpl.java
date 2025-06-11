@@ -25,16 +25,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getUserById(Long id) {
-        return Optional.empty();
+        return userRepository.findById(id);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return List.of();
+        return userRepository.findAll();
     }
 
     @Override
     public User updateUser(Long id, User user) {
+        Optional<User> u = userRepository.findById(id);
         return null;
     }
 
