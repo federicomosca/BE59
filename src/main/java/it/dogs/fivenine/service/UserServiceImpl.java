@@ -3,11 +3,13 @@ package it.dogs.fivenine.service;
 import it.dogs.fivenine.model.User;
 import it.dogs.fivenine.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-public class UserServiceImpl implements UserService{
+@Service
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
