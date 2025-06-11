@@ -14,12 +14,17 @@ public class Writer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private Long Id;
 
+    @Column
     private String firstName;
+    
+    @Column
     private String lastName;
+    
+    @Column
     private Date birthday;
 
-    @OneToMany
+    @OneToMany(mappedBy="writer")
     private Set<Movie> movies;
 }

@@ -15,13 +15,15 @@ public class Director {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String firstName;
 
     @Column(nullable = false)
     private String lastName;
 
+    @Column
     private Date birthday;
 
-    @OneToMany
+    @OneToMany(mappedBy="director")
     private Set<Movie> movies;
 }
