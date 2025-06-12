@@ -1,4 +1,4 @@
-package it.dogs.fivenine.model;
+package it.dogs.fivenine.model.domain;
 
 import lombok.Data;
 import jakarta.persistence.*;
@@ -21,9 +21,7 @@ public class Collection {
     private User user;
 
     @ManyToMany
-    @JoinTable(name = "collection_movie",
-            joinColumns = @JoinColumn(name = "collection_id"),
-            inverseJoinColumns = @JoinColumn(name = "movie_id"))
+    @JoinTable(name = "collection_movie", joinColumns = @JoinColumn(name = "collection_id"), inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private List<Movie> movies;
 
 }

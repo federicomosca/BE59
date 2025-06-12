@@ -1,7 +1,8 @@
 package it.dogs.fivenine.service;
 
-import it.dogs.fivenine.model.User;
 import org.springframework.stereotype.Service;
+
+import it.dogs.fivenine.model.domain.User;
 
 import java.util.List;
 import java.util.Optional;

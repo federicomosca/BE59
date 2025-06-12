@@ -1,6 +1,6 @@
 package it.dogs.fivenine.service;
 
-import it.dogs.fivenine.model.Movie;
+import it.dogs.fivenine.model.domain.Movie;
 import it.dogs.fivenine.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 

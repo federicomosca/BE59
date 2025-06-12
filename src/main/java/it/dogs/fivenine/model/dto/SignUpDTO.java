@@ -1,0 +1,27 @@
+package it.dogs.fivenine.model.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.*;
+import jakarta.validation.constraints.*;
+
+@Data
+@NoArgsConstructor
+public class SignUpDTO {
+
+    @NotBlank
+    @Email
+    @JsonProperty("email")
+    private String email;
+
+    @NotBlank
+    @Size(max = 7)
+    @Pattern(regexp = "^[a-z0-9._-]+$")
+    @JsonProperty("username")
+    private String username;
+
+    @NotBlank
+    @Size(min = 8)
+    @JsonProperty("password")
+    private String password;
+}

@@ -1,6 +1,6 @@
 package it.dogs.fivenine.service;
 
-import it.dogs.fivenine.model.Collection;
+import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.repository.CollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

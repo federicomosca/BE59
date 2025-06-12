@@ -1,12 +1,14 @@
-package it.dogs.fivenine.model;
+package it.dogs.fivenine.model.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -14,16 +16,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String username;
-
-    @Column(nullable = false)
     private String email;
-
-    @Column(nullable = false)
     private String password;
-
-    @Column(name = "registration_date")
     private Date registrationDate;
 
     @OneToMany

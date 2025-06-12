@@ -1,6 +1,6 @@
 package it.dogs.fivenine.controller;
 
-import it.dogs.fivenine.model.Collection;
+import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.service.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

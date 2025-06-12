@@ -1,5 +1,4 @@
-package it.dogs.fivenine.model;
-
+package it.dogs.fivenine.model.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,22 +8,22 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "writers")
-public class Writer {
+@Table(name = "directors")
+public class Director {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column
     private String firstName;
-    
-    @Column
+
+    @Column(nullable = false)
     private String lastName;
-    
+
     @Column
     private Date birthday;
 
-    @OneToMany(mappedBy="writer")
+    @OneToMany(mappedBy = "director")
     private Set<Movie> movies;
 }

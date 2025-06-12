@@ -1,4 +1,4 @@
-package it.dogs.fivenine.model;
+package it.dogs.fivenine.model.domain;
 
 import java.util.Date;
 import java.util.Set;
@@ -19,21 +19,21 @@ public class Actor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-    
+    private Long id;
+
     @Column
     private String firstName;
-    
+
     @Column
     private String lastName;
-    
+
     @Column
     private Date birthday;
-    
+
     @Column
     private String nationality;
-    
+
     @ManyToMany(mappedBy = "actors")
     private Set<Movie> movies;
-	
+
 }

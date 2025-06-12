@@ -1,6 +1,6 @@
 package it.dogs.fivenine.controller;
 
-import it.dogs.fivenine.model.Movie;
+import it.dogs.fivenine.model.domain.Movie;
 import it.dogs.fivenine.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package it.dogs.fivenine;
+package it.dogs.fivenine.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

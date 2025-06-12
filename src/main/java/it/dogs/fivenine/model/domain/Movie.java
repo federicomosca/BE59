@@ -1,4 +1,4 @@
-package it.dogs.fivenine.model;
+package it.dogs.fivenine.model.domain;
 
 import lombok.Data;
 import lombok.Getter;
@@ -30,11 +30,9 @@ public class Movie {
 
     @ManyToOne
     private Writer writer;
-    
+
     @ManyToMany
-    @JoinTable(name = "starring",
-        joinColumns = @JoinColumn(name = "movie_id"),
-        inverseJoinColumns = @JoinColumn(name = "actor_id"))
+    @JoinTable(name = "starring", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "actor_id"))
     private Set<Actor> actors;
 
     public String getTitle() {
@@ -44,6 +42,5 @@ public class Movie {
     public void setTitle(String title) {
         this.title = title;
     }
-	
 
 }

@@ -1,6 +1,6 @@
 package it.dogs.fivenine.service;
 
-import it.dogs.fivenine.model.User;
+import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
