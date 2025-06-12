@@ -24,4 +24,11 @@ public class SignUpDTO {
     @Size(min = 8)
     @JsonProperty("password")
     private String password;
+
+    @Builder
+    public SignUpDTO(String email, String username, String password) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+    }
 }

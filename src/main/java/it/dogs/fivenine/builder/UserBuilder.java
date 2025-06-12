@@ -18,4 +18,8 @@ public class UserBuilder {
         return model;
     }
 
+    public SignUpDTO buildDTO(User user) {
+        SignUpDTO dto = modelMapper.map(user, SignUpDTO.class);
+        return dto;
+    }
 }
