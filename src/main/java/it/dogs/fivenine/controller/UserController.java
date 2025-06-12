@@ -1,6 +1,7 @@
 package it.dogs.fivenine.controller;
 
 import it.dogs.fivenine.model.domain.User;
+import it.dogs.fivenine.model.dto.SignUpDTO;
 import it.dogs.fivenine.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -20,9 +21,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    @PostMapping("/signUp")
+    public Long signUp(@RequestBody SignUpDTO dto) {
+        return userService.signUp(dto);
     }
 
     @GetMapping("/{id}")
