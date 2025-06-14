@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.Getter;
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 @Entity
@@ -24,16 +23,6 @@ public class Movie {
 
     @Column(name = "release_date")
     private LocalDate releaseDate;
-
-    @ManyToOne
-    private Director director;
-
-    @ManyToOne
-    private Writer writer;
-
-    @ManyToMany
-    @JoinTable(name = "starring", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "actor_id"))
-    private Set<Actor> actors;
 
     public String getTitle() {
         return title;

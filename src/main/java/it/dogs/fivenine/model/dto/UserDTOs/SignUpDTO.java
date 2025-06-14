@@ -1,4 +1,4 @@
-package it.dogs.fivenine.model.dto;
+package it.dogs.fivenine.model.dto.UserDTOs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

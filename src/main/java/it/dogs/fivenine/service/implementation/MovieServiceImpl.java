@@ -1,7 +1,9 @@
-package it.dogs.fivenine.service;
+package it.dogs.fivenine.service.implementation;
 
 import it.dogs.fivenine.model.domain.Movie;
 import it.dogs.fivenine.repository.MovieRepository;
+import it.dogs.fivenine.service.MovieService;
+
 import org.springframework.stereotype.Service;
 
 @Service

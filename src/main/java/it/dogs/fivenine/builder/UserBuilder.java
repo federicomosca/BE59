@@ -4,7 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import it.dogs.fivenine.model.domain.User;
-import it.dogs.fivenine.model.dto.SignUpDTO;
+import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
 import lombok.AllArgsConstructor;
 
 @Component
