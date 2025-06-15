@@ -6,6 +6,7 @@ import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
 import it.dogs.fivenine.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +20,21 @@ public class UserController {
 
     // <------------------------------ general user endpoints ------------------------------> 
 
+    @PostMapping("/signUp")
+    public Long signUp(@RequestBody SignUpDTO dto) {
+        return userService.signUp(dto);
+    }
+    
     @GetMapping("login")
     public String login(@RequestBody LoginDTO dto) {
         return userService.login(dto);
     }
 
-    @PostMapping("/signUp")
-    public Long signUp(@RequestBody SignUpDTO dto) {
-        return userService.signUp(dto);
+    public String updateEmail(@RequestBody LoginDTO dto, String newEmail) {
+        return userService.updateEmail(dto, newEmail);
     }
+
+    
 
     // <------------------------------ privileged user endpoints ------------------------------>
 
@@ -36,4 +43,10 @@ public class UserController {
     public List<User> getUsers(@RequestBody String adminPassword) {
         return userService.getUsers(adminPassword);
     }
+
+    public Optional<User> getUserById(@RequestBody Long id){
+        return userService.findById(id);
+    }
+
+
 }

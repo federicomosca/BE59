@@ -1,6 +1,7 @@
 package it.dogs.fivenine.service.implementation;
 
 import it.dogs.fivenine.builder.UserBuilder;
+import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -43,6 +45,36 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsers(String adminPassword) {
         if(adminPassword.equals("lolWUT"))
         return repository.findAll();
+        return null;
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    public String updateEmail(LoginDTO dto, String newEmail) {
+        User u = repository.findByUsername(dto.getUsername());
+            if(u.getPassword().equals(dto.getPassword())) {
+                dto.setEmail(newEmail);
+                return "ok"; 
+            }
+            return "ko";
+    }
+
+    @Override
+    public String changePassword(LoginDTO dto, String newPassword) {
+        return null;
+    }
+
+    @Override
+    public String unsubscribe(LoginDTO dto) {
+        return null;
+    }
+
+    @Override
+    public List<Collection> getCollections(LoginDTO dto) {
         return null;
     }
 }
