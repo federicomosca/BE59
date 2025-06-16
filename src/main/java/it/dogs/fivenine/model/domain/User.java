@@ -20,6 +20,7 @@ public class User {
     private String email;
     private String password;
     private Date registrationDate;
+    private Boolean active = true;
 
     @OneToMany
     private Set<Collection> collections;

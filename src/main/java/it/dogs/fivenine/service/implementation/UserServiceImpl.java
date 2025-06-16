@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @Service
@@ -65,16 +66,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String changePassword(LoginDTO dto, String newPassword) {
-        return null;
+        User u = repository.findByUsername(dto.getUsername());
+        if(u.getPassword().equals(dto.getPassword())){
+            dto.setPassword(newPassword);
+            return "ok";
+        }
+        return "ko";
     }
 
     @Override
-    public String unsubscribe(LoginDTO dto) {
-        return null;
+    public String deactivate(LoginDTO dto) {
+        User u = repository.findByUsername(dto.getUsername());
+        if(u.getPassword().equals(dto.getPassword())){
+            u.setActive(false);
+            return "You successfully deactivated";
+        }
+        return "Wrong password.";
     }
 
     @Override
-    public List<Collection> getCollections(LoginDTO dto) {
-        return null;
+    public int deleteUser(LoginDTO dto) {
+        User u = repository.findByUsername(dto.getUsername());
+        if(u.getPassword().equals(dto.getPassword())){
+            repository.delete(u);
+            return 0;
+        }
+        return 1;
+    }
+
+    @Override
+    public Set<Collection> getCollections(LoginDTO dto) {
+        User u = repository.findByUsername(dto.getUsername());
+        Set<Collection> c = u.getCollections();
+        return c;
     }
 }

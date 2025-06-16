@@ -2,6 +2,7 @@ package it.dogs.fivenine.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public interface UserService {
     Optional<User> findById(Long id);
     String updateEmail(LoginDTO dto, String newEmail);
     String changePassword(LoginDTO dto, String newPassword);
-    String unsubscribe(LoginDTO dto);
-    List<Collection> getCollections(LoginDTO dto);
+    String deactivate(LoginDTO dto);
+    int deleteUser(LoginDTO dto);
+    Set<Collection> getCollections(LoginDTO dto);
 }
