@@ -86,10 +86,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int deleteUser(LoginDTO dto) {
-        User u = repository.findByUsername(dto.getUsername());
-        if(u.getPassword().equals(dto.getPassword())){
+        User u = repository.authenticate(dto.getUsername(), dto.getPassword());
+        if(u != null) { 
             repository.delete(u);
-            return 0;
+            return 0; 
         }
         return 1;
     }

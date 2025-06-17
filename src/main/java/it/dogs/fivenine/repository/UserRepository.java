@@ -9,4 +9,5 @@ import it.dogs.fivenine.model.domain.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
+    User authenticate(String username, String password);
 }
