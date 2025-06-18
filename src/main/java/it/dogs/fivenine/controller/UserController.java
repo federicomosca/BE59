@@ -40,9 +40,9 @@ public class UserController {
 
     // should create an endpoint to let admins signup and automatically receive a password for privileged actions
 
-    @GetMapping("/get-all")
-    public List<User> getUsers(@RequestBody String adminPassword) {
-        return userService.getUsers(adminPassword);
+    @PostMapping("/get-all")
+    public List<User> getUsers() {
+        return userService.getUsers();
     }
 
     public Optional<User> getUserById(@RequestBody Long id){

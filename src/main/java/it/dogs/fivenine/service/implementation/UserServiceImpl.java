@@ -43,10 +43,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers(String adminPassword) {
-        if(adminPassword.equals("lolWUT"))
+    public List<User> getUsers() {
         return repository.findAll();
-        return null;
     }
 
     @Override

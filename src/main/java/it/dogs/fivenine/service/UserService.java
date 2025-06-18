@@ -17,7 +17,7 @@ public interface UserService {
 
     Long signUp(SignUpDTO dto);
     String login(LoginDTO dto);
-    List<User> getUsers(String adminPassword);
+    List<User> getUsers();
     Optional<User> findById(Long id);
     String updateEmail(LoginDTO dto, String newEmail);
     String changePassword(LoginDTO dto, String newPassword);

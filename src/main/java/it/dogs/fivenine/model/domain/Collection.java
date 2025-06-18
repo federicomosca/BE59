@@ -4,6 +4,8 @@ import lombok.Data;
 import jakarta.persistence.*;
 import java.util.List;
 
+import it.dogs.fivenine.model.domain.sets.CollectionType;
+
 @Data
 @Entity
 @Table(name = "collections")
@@ -14,6 +16,8 @@ public class Collection {
     private Long id;
 
     private String name;
+
+    private CollectionType type;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
