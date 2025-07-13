@@ -19,7 +19,7 @@ public interface UserService {
     String login(LoginDTO dto);
     List<User> getUsers();
     Optional<User> findById(Long id);
-    String updateEmail(LoginDTO dto, String newEmail);
+    void updateEmail(Long userId, String newEmail);
     String changePassword(LoginDTO dto, String newPassword);
     String deactivate(LoginDTO dto);
     int deleteUser(LoginDTO dto);

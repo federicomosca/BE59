@@ -7,9 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name="email_change_requests")
 public class EmailChangeRequest {
@@ -22,4 +20,37 @@ public class EmailChangeRequest {
     private String token;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
+
+    public Long getUserId() {
+        return userId;
+    }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    public String getNewEmail() {
+        return newEmail;
+    }
+    public void setNewEmail(String newEmail) {
+        this.newEmail = newEmail;
+    }
+    public String getToken() {
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
+    
 }

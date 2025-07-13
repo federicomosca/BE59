@@ -5,13 +5,15 @@ import org.springframework.stereotype.Component;
 
 import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
-import lombok.AllArgsConstructor;
 
 @Component
-@AllArgsConstructor
 public class UserBuilder {
 
     private final ModelMapper modelMapper;
+
+    public UserBuilder(ModelMapper modelMapper){
+        this.modelMapper = modelMapper;
+    }
 
     public User build(SignUpDTO dto) {
         User model = modelMapper.map(dto, User.class);
