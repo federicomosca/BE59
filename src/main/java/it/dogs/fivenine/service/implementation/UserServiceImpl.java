@@ -99,4 +99,9 @@ public class UserServiceImpl implements UserService {
         Set<Collection> c = u.getCollections();
         return c;
     }
+
+    @Override
+    public Optional<User> findByEmail(String newEmail) {
+        return repository.findByEmail(newEmail);
+    }
 }

@@ -24,4 +24,5 @@ public interface UserService {
     String deactivate(LoginDTO dto);
     int deleteUser(LoginDTO dto);
     Set<Collection> getCollections(LoginDTO dto);
+    Optional<User> findByEmail(String newEmail);
 }
