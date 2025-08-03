@@ -13,6 +13,7 @@ import it.dogs.fivenine.model.result.LoginResult;
 import it.dogs.fivenine.model.result.SignUpResult;
 import it.dogs.fivenine.repository.UserRepository;
 import it.dogs.fivenine.service.AuditService;
+import it.dogs.fivenine.service.EmailConfirmationService;
 import it.dogs.fivenine.service.UserService;
 import it.dogs.fivenine.util.JwtUtil;
 
@@ -33,12 +34,15 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuditService auditService;
+    private final EmailConfirmationService emailConfirmationService;
 
-    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper, JwtUtil jwtUtil, AuditService auditService) {
+    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper, JwtUtil jwtUtil, 
+                          AuditService auditService, EmailConfirmationService emailConfirmationService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
         this.jwtUtil = jwtUtil;
         this.auditService = auditService;
+        this.emailConfirmationService = emailConfirmationService;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -67,6 +71,13 @@ public class UserServiceImpl implements UserService {
             
             User savedUser = repository.save(user);
             auditService.logUserAction(savedUser.getId(), "SIGNUP_SUCCESS", null, null, "User registered successfully", true);
+            
+            // Send email confirmation
+            try {
+                emailConfirmationService.sendConfirmationEmail(savedUser.getId(), savedUser.getEmail());
+            } catch (Exception e) {
+                auditService.logUserAction(savedUser.getId(), "EMAIL_CONFIRMATION_SEND_FAILED", null, null, "Failed to send confirmation email: " + e.getMessage(), false);
+            }
             
             return SignUpResult.success(savedUser.getId());
         } catch (Exception e) {

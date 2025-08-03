@@ -1,7 +1,5 @@
 package it.dogs.fivenine.service;
 
-import it.dogs.fivenine.model.domain.UserAuditLog;
-
 public interface AuditService {
     
     void logUserAction(Long userId, String action, String ipAddress, String userAgent, String details, boolean success);

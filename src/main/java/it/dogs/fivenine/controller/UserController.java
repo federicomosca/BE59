@@ -13,12 +13,12 @@ import it.dogs.fivenine.model.result.PasswordChangeResult;
 import it.dogs.fivenine.model.result.PasswordConfirmationResult;
 import it.dogs.fivenine.model.result.SignUpResult;
 import it.dogs.fivenine.service.EmailChangeService;
+import it.dogs.fivenine.service.EmailConfirmationService;
 import it.dogs.fivenine.service.PasswordChangeService;
 import it.dogs.fivenine.service.UserService;
 import it.dogs.fivenine.util.JwtUtil;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +33,9 @@ public class UserController {
     
     @Autowired
     private EmailChangeService emailChangeService;
+    
+    @Autowired
+    private EmailConfirmationService emailConfirmationService;
     
     @Autowired
     private PasswordChangeService passwordChangeService;
@@ -63,6 +66,12 @@ public class UserController {
     @PostMapping("/email/confirm")
     public ResponseEntity<EmailConfirmationResult> confirmEmailChange(@RequestParam String token) {
         EmailConfirmationResult result = emailChangeService.confirmEmailChange(token);
+        return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/email/confirm-registration")
+    public ResponseEntity<EmailConfirmationResult> confirmEmailRegistration(@RequestParam String token) {
+        EmailConfirmationResult result = emailConfirmationService.confirmEmail(token);
         return ResponseEntity.ok(result);
     }
     

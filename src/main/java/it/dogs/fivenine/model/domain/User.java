@@ -17,6 +17,7 @@ public class User {
     private String password;
     private Date registrationDate;
     private Boolean active = true;
+    private Boolean emailConfirmed = false;
     
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
@@ -94,5 +95,13 @@ public class User {
 
     public boolean isModerator() {
         return role == UserRole.MODERATOR;
+    }
+
+    public Boolean getEmailConfirmed() {
+        return emailConfirmed;
+    }
+
+    public void setEmailConfirmed(Boolean emailConfirmed) {
+        this.emailConfirmed = emailConfirmed;
     }
 }
