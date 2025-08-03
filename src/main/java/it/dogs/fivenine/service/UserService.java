@@ -10,20 +10,23 @@ import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
+import it.dogs.fivenine.model.result.AccountActionResult;
 import it.dogs.fivenine.model.result.LoginResult;
+import it.dogs.fivenine.model.result.SignUpResult;
 
 
 @Service
 public interface UserService {
 
-    Long signUp(SignUpDTO dto);
+    SignUpResult signUp(SignUpDTO dto);
     LoginResult login(LoginDTO dto);
     List<User> getUsers();
     Optional<User> findById(Long id);
     void updateEmail(Long userId, String newEmail);
     String changePassword(LoginDTO dto, String newPassword);
-    String deactivate(LoginDTO dto);
-    int deleteUser(LoginDTO dto);
+    AccountActionResult deactivate(LoginDTO dto);
+    AccountActionResult reactivate(LoginDTO dto);
+    AccountActionResult deleteUser(LoginDTO dto);
     Set<Collection> getCollections(LoginDTO dto);
     Optional<User> findByEmail(String newEmail);
     User save(User user);

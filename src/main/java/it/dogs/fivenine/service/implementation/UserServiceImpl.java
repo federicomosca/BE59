@@ -5,9 +5,13 @@ import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
+import it.dogs.fivenine.model.result.AccountActionError;
+import it.dogs.fivenine.model.result.AccountActionResult;
 import it.dogs.fivenine.model.result.LoginError;
 import it.dogs.fivenine.model.result.LoginResult;
+import it.dogs.fivenine.model.result.SignUpResult;
 import it.dogs.fivenine.repository.UserRepository;
+import it.dogs.fivenine.service.AuditService;
 import it.dogs.fivenine.service.UserService;
 import it.dogs.fivenine.util.JwtUtil;
 
@@ -27,35 +31,47 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final AuditService auditService;
 
-    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper, JwtUtil jwtUtil) {
+    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper, JwtUtil jwtUtil, AuditService auditService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
         this.jwtUtil = jwtUtil;
+        this.auditService = auditService;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
-    public Long signUp(SignUpDTO dto) {
-        // Check for duplicate username
-        if (repository.findByUsername(dto.getUsername()) != null) {
-            throw new RuntimeException("Username already exists");
+    public SignUpResult signUp(SignUpDTO dto) {
+        try {
+            // Check for duplicate username
+            if (repository.findByUsername(dto.getUsername()) != null) {
+                auditService.logUserAction(null, "SIGNUP_FAILED", null, null, "Username already exists: " + dto.getUsername(), false);
+                return SignUpResult.failure("USERNAME_EXISTS", "Username already exists");
+            }
+            
+            // Check for duplicate email
+            if (repository.findByEmail(dto.getEmail()).isPresent()) {
+                auditService.logUserAction(null, "SIGNUP_FAILED", null, null, "Email already exists: " + dto.getEmail(), false);
+                return SignUpResult.failure("EMAIL_EXISTS", "Email already exists");
+            }
+            
+            User user = modelMapper.map(dto, User.class);
+            
+            // Hash password
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            
+            // Set registration date
+            user.setRegistrationDate(new Date());
+            
+            User savedUser = repository.save(user);
+            auditService.logUserAction(savedUser.getId(), "SIGNUP_SUCCESS", null, null, "User registered successfully", true);
+            
+            return SignUpResult.success(savedUser.getId());
+        } catch (Exception e) {
+            auditService.logUserAction(null, "SIGNUP_FAILED", null, null, "Registration error: " + e.getMessage(), false);
+            return SignUpResult.failure("REGISTRATION_ERROR", "Registration failed: " + e.getMessage());
         }
-        
-        // Check for duplicate email
-        if (repository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
-        }
-        
-        User user = modelMapper.map(dto, User.class);
-        
-        // Hash password
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        
-        // Set registration date
-        user.setRegistrationDate(new Date());
-        
-        return repository.save(user).getId();
     }
 
     @Override
@@ -63,19 +79,23 @@ public class UserServiceImpl implements UserService {
         User user = repository.findByUsername(dto.getUsername());
         
         if (user == null) {
+            auditService.logLoginAttempt(dto.getUsername(), null, null, false, "User not found");
             return LoginResult.failure(LoginError.USER_NOT_FOUND, "User not found");
         }
         
         if (!user.getActive()) {
+            auditService.logLoginAttempt(dto.getUsername(), null, null, false, "Account inactive");
             return LoginResult.failure(LoginError.ACCOUNT_INACTIVE, "Account is inactive");
         }
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            auditService.logLoginAttempt(dto.getUsername(), null, null, false, "Invalid password");
             return LoginResult.failure(LoginError.INVALID_CREDENTIALS, "Invalid credentials");
         }
         
         // Generate JWT token
         String token = jwtUtil.generateToken(user.getId(), user.getUsername());
+        auditService.logLoginAttempt(dto.getUsername(), null, null, true, "Login successful");
         
         return LoginResult.success(token, user.getId(), user.getUsername());
     }
@@ -109,24 +129,76 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deactivate(LoginDTO dto) {
-        User u = repository.findByUsername(dto.getUsername());
-        if (u != null && passwordEncoder.matches(dto.getPassword(), u.getPassword())) {
-            u.setActive(false);
-            repository.save(u);
-            return "You successfully deactivated";
+    public AccountActionResult deactivate(LoginDTO dto) {
+        User user = repository.findByUsername(dto.getUsername());
+        
+        if (user == null) {
+            auditService.logAccountAction(null, "DEACTIVATE_FAILED", null, null, false);
+            return AccountActionResult.failure("DEACTIVATE", AccountActionError.USER_NOT_FOUND, "User not found");
         }
-        return "Wrong password.";
+        
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            auditService.logAccountAction(user.getId(), "DEACTIVATE_FAILED", null, null, false);
+            return AccountActionResult.failure("DEACTIVATE", AccountActionError.INVALID_PASSWORD, "Invalid password");
+        }
+        
+        if (!user.getActive()) {
+            auditService.logAccountAction(user.getId(), "DEACTIVATE_FAILED", null, null, false);
+            return AccountActionResult.failure("DEACTIVATE", AccountActionError.ACCOUNT_ALREADY_INACTIVE, "Account is already inactive");
+        }
+        
+        user.setActive(false);
+        repository.save(user);
+        auditService.logAccountAction(user.getId(), "DEACTIVATE_SUCCESS", null, null, true);
+        
+        return AccountActionResult.success("DEACTIVATE", "Account deactivated successfully");
     }
 
     @Override
-    public int deleteUser(LoginDTO dto) {
-        User u = repository.findByUsername(dto.getUsername());
-        if (u != null && passwordEncoder.matches(dto.getPassword(), u.getPassword())) {
-            repository.delete(u);
-            return 0;
+    public AccountActionResult reactivate(LoginDTO dto) {
+        User user = repository.findByUsername(dto.getUsername());
+        
+        if (user == null) {
+            auditService.logAccountAction(null, "REACTIVATE_FAILED", null, null, false);
+            return AccountActionResult.failure("REACTIVATE", AccountActionError.USER_NOT_FOUND, "User not found");
         }
-        return 1;
+        
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            auditService.logAccountAction(user.getId(), "REACTIVATE_FAILED", null, null, false);
+            return AccountActionResult.failure("REACTIVATE", AccountActionError.INVALID_PASSWORD, "Invalid password");
+        }
+        
+        if (user.getActive()) {
+            auditService.logAccountAction(user.getId(), "REACTIVATE_FAILED", null, null, false);
+            return AccountActionResult.failure("REACTIVATE", AccountActionError.ACCOUNT_ALREADY_ACTIVE, "Account is already active");
+        }
+        
+        user.setActive(true);
+        repository.save(user);
+        auditService.logAccountAction(user.getId(), "REACTIVATE_SUCCESS", null, null, true);
+        
+        return AccountActionResult.success("REACTIVATE", "Account reactivated successfully");
+    }
+
+    @Override
+    public AccountActionResult deleteUser(LoginDTO dto) {
+        User user = repository.findByUsername(dto.getUsername());
+        
+        if (user == null) {
+            auditService.logAccountAction(null, "DELETE_FAILED", null, null, false);
+            return AccountActionResult.failure("DELETE", AccountActionError.USER_NOT_FOUND, "User not found");
+        }
+        
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            auditService.logAccountAction(user.getId(), "DELETE_FAILED", null, null, false);
+            return AccountActionResult.failure("DELETE", AccountActionError.INVALID_PASSWORD, "Invalid password");
+        }
+        
+        Long userId = user.getId();
+        repository.delete(user);
+        auditService.logAccountAction(userId, "DELETE_SUCCESS", null, null, true);
+        
+        return AccountActionResult.success("DELETE", "Account deleted successfully");
     }
 
     @Override

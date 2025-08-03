@@ -5,11 +5,13 @@ import it.dogs.fivenine.model.dto.UserDTOs.EmailUpdateDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.PasswordChangeDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
+import it.dogs.fivenine.model.result.AccountActionResult;
 import it.dogs.fivenine.model.result.EmailChangeResult;
 import it.dogs.fivenine.model.result.EmailConfirmationResult;
 import it.dogs.fivenine.model.result.LoginResult;
 import it.dogs.fivenine.model.result.PasswordChangeResult;
 import it.dogs.fivenine.model.result.PasswordConfirmationResult;
+import it.dogs.fivenine.model.result.SignUpResult;
 import it.dogs.fivenine.service.EmailChangeService;
 import it.dogs.fivenine.service.PasswordChangeService;
 import it.dogs.fivenine.service.UserService;
@@ -37,8 +39,9 @@ public class UserController {
     // <------------------------------ general user endpoints ------------------------------>
 
     @PostMapping("/signUp")
-    public Long signUp(@RequestBody SignUpDTO dto) {
-        return userService.signUp(dto);
+    public ResponseEntity<SignUpResult> signUp(@RequestBody SignUpDTO dto) {
+        SignUpResult result = userService.signUp(dto);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/login")
@@ -72,18 +75,21 @@ public class UserController {
     }
     
     @PostMapping("/deactivate")
-    public ResponseEntity<String> deactivateAccount(@RequestBody LoginDTO dto) {
-        String result = userService.deactivate(dto);
+    public ResponseEntity<AccountActionResult> deactivateAccount(@RequestBody LoginDTO dto) {
+        AccountActionResult result = userService.deactivate(dto);
+        return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/reactivate")
+    public ResponseEntity<AccountActionResult> reactivateAccount(@RequestBody LoginDTO dto) {
+        AccountActionResult result = userService.reactivate(dto);
         return ResponseEntity.ok(result);
     }
     
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteAccount(@RequestBody LoginDTO dto) {
-        int result = userService.deleteUser(dto);
-        if (result == 0) {
-            return ResponseEntity.ok("Account deleted successfully");
-        }
-        return ResponseEntity.badRequest().body("Failed to delete account");
+    public ResponseEntity<AccountActionResult> deleteAccount(@RequestBody LoginDTO dto) {
+        AccountActionResult result = userService.deleteUser(dto);
+        return ResponseEntity.ok(result);
     }
 
     // <------------------------------ privileged user endpoints ------------------------------>
