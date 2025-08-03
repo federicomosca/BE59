@@ -19,4 +19,16 @@ public class EmailChangeResult {
    public static EmailChangeResult failure(EmailChangeError error, String message) {
        return new EmailChangeResult(false, error, message);
    }
+
+   public boolean isSuccess() {
+       return success;
+   }
+
+   public EmailChangeError getErrorCode() {
+       return errorCode;
+   }
+
+   public String getMessage() {
+       return message;
+   }
 }

@@ -3,7 +3,6 @@ package it.dogs.fivenine.service.implementation;
 import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.dto.CollectionDTOs.CollectionDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
-import it.dogs.fivenine.repository.CollectionRepository;
 import it.dogs.fivenine.service.CollectionService;
 
 import java.util.List;
@@ -13,11 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CollectionServiceImpl implements CollectionService {
 
-    private final CollectionRepository repository;
 
-    public CollectionServiceImpl(CollectionRepository repository) {
-        this.repository = repository;
-    }
+
 
     @Override
     public void createCollection(CollectionDTO dto) {

@@ -19,4 +19,16 @@ public class EmailConfirmationResult {
    public static EmailConfirmationResult failure(EmailConfirmationError error, String message) {
        return new EmailConfirmationResult(false, error, message);
    }
+
+   public boolean isSuccess() {
+       return success;
+   }
+
+   public EmailConfirmationError getErrorCode() {
+       return errorCode;
+   }
+
+   public String getMessage() {
+       return message;
+   }
 }

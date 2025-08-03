@@ -6,4 +6,20 @@ public class CollectionDTO {
     
     private String name;
     private CollectionType type;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public CollectionType getType() {
+        return type;
+    }
+
+    public void setType(CollectionType type) {
+        this.type = type;
+    }
 }
