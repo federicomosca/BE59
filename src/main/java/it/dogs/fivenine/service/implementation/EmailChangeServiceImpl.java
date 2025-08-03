@@ -67,8 +67,25 @@ public class EmailChangeServiceImpl implements EmailChangeService {
 
     @Override
     public EmailConfirmationResult confirmEmailChange(String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'confirmEmailChange'");
+        // find valid token
+        Optional<EmailChangeRequest> requestOpt = repository.findValidToken(token, LocalDateTime.now());
+        
+        if (requestOpt.isEmpty()) {
+            return EmailConfirmationResult.failure(
+                it.dogs.fivenine.model.result.EmailConfirmationError.TOKEN_NOT_FOUND, 
+                "Token not found or expired"
+            );
+        }
+        
+        EmailChangeRequest request = requestOpt.get();
+        
+        // update user email
+        userService.updateEmail(request.getUserId(), request.getNewEmail());
+        
+        // delete the used token
+        repository.delete(request);
+        
+        return EmailConfirmationResult.success();
     }
 
 }

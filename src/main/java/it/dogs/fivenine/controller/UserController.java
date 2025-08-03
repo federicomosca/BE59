@@ -4,6 +4,9 @@ import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.EmailUpdateDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
+import it.dogs.fivenine.model.result.EmailChangeResult;
+import it.dogs.fivenine.model.result.EmailConfirmationResult;
+import it.dogs.fivenine.service.EmailChangeService;
 import it.dogs.fivenine.service.UserService;
 
 import java.util.List;
@@ -19,6 +22,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private EmailChangeService emailChangeService;
 
     // <------------------------------ general user endpoints ------------------------------>
 
@@ -32,10 +38,16 @@ public class UserController {
         return userService.login(dto);
     }
 
-    @PutMapping("/{userId}/email")
-    public ResponseEntity<String> updateEmail(@PathVariable Long userId, @RequestBody EmailUpdateDTO dto) {
-        userService.updateEmail(userId, dto.getNewEmail());
-        return ResponseEntity.ok("Email updated");
+    @PostMapping("/{userId}/email/request")
+    public ResponseEntity<EmailChangeResult> requestEmailChange(@PathVariable Long userId, @RequestBody EmailUpdateDTO dto) {
+        EmailChangeResult result = emailChangeService.requestEmailChange(userId, dto.getNewEmail());
+        return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/email/confirm")
+    public ResponseEntity<EmailConfirmationResult> confirmEmailChange(@RequestParam String token) {
+        EmailConfirmationResult result = emailChangeService.confirmEmailChange(token);
+        return ResponseEntity.ok(result);
     }
 
     // <------------------------------ privileged user endpoints ------------------------------>

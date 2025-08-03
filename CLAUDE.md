@@ -30,7 +30,6 @@ The application expects a MySQL database:
 - **Controllers**: `it.dogs.fivenine.controller.*` - REST endpoints
 - **Services**: `it.dogs.fivenine.service.*` with implementations in `implementation.*`
 - **Repositories**: `it.dogs.fivenine.repository.*` - JPA repositories
-- **Builders**: `it.dogs.fivenine.builder.*` - Object construction patterns
 
 ### Core Domain Models
 - **User**: Central entity with username, email, password, and collections
@@ -43,11 +42,7 @@ The application expects a MySQL database:
 #### Service Layer Pattern
 - Service interfaces with implementation classes
 - Constructor injection for dependencies (no @Autowired in constructors)
-- Functional programming style with Stream API usage
-
-#### Builder Pattern
-- `UserBuilder` for constructing User entities from DTOs
-- Separates object construction logic from business logic
+- Direct ModelMapper usage for DTO-to-entity conversions
 
 #### Email Change Workflow
 The application implements a token-based email change system:
