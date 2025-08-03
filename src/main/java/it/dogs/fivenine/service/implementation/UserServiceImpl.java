@@ -1,6 +1,6 @@
 package it.dogs.fivenine.service.implementation;
 
-import it.dogs.fivenine.builder.UserBuilder;
+import org.modelmapper.ModelMapper;
 import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
@@ -19,21 +19,17 @@ import java.util.stream.Stream;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
-    private final UserBuilder builder;
+    private final ModelMapper modelMapper;
 
-    public UserServiceImpl(UserRepository repository, UserBuilder builder) {
+    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper) {
         this.repository = repository;
-        this.builder = builder;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public Long signUp(SignUpDTO dto) {
-        return Stream.of(dto)
-                .map(builder::build)
-                .map(repository::save)
-                .map(User::getId)
-                .findFirst()
-                .get();
+        User user = modelMapper.map(dto, User.class);
+        return repository.save(user).getId();
     }
 
     @Override
