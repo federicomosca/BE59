@@ -8,8 +8,10 @@ import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
 import it.dogs.fivenine.repository.UserRepository;
 import it.dogs.fivenine.service.UserService;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,23 +22,46 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final ModelMapper modelMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository repository, ModelMapper modelMapper) {
         this.repository = repository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
     public Long signUp(SignUpDTO dto) {
+        // Check for duplicate username
+        if (repository.findByUsername(dto.getUsername()) != null) {
+            throw new RuntimeException("Username already exists");
+        }
+        
+        // Check for duplicate email
+        if (repository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+        
         User user = modelMapper.map(dto, User.class);
+        
+        // Hash password
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        
+        // Set registration date
+        user.setRegistrationDate(new Date());
+        
         return repository.save(user).getId();
     }
 
     @Override
     public String login(LoginDTO dto) {
         User u = repository.findByUsername(dto.getUsername());
+        
+        if (u == null) {
+            return "ko";
+        }
 
-        if (u.getPassword().equals(dto.getPassword()))
+        if (passwordEncoder.matches(dto.getPassword(), u.getPassword()))
             return "ok";
         return "ko";
     }
