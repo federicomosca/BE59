@@ -4,6 +4,7 @@ import it.dogs.fivenine.model.domain.MovieRequest;
 import it.dogs.fivenine.model.dto.MovieDTOs.MovieRequestDTO;
 import it.dogs.fivenine.model.result.MovieRequestResult;
 import it.dogs.fivenine.service.MovieRequestService;
+import it.dogs.fivenine.service.UserService;
 import it.dogs.fivenine.util.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,16 @@ public class MovieRequestController {
     private MovieRequestService movieRequestService;
     
     @Autowired
+    private UserService userService;
+    
+    @Autowired
     private JwtUtil jwtUtil;
+
+    private boolean isAdmin(String authHeader) {
+        String token = authHeader.substring(7);
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        return userService.isUserAdmin(userId);
+    }
 
     @PostMapping
     public ResponseEntity<MovieRequestResult> submitMovieRequest(
@@ -47,21 +57,33 @@ public class MovieRequestController {
 
     // Admin endpoints
     @GetMapping("/pending")
-    public ResponseEntity<List<MovieRequest>> getPendingRequests() {
+    public ResponseEntity<?> getPendingRequests(@RequestHeader("Authorization") String authHeader) {
+        if (!isAdmin(authHeader)) {
+            return ResponseEntity.status(403).body("Admin access required");
+        }
+        
         List<MovieRequest> requests = movieRequestService.getPendingRequests();
         return ResponseEntity.ok(requests);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<MovieRequest>> getAllRequests() {
+    public ResponseEntity<?> getAllRequests(@RequestHeader("Authorization") String authHeader) {
+        if (!isAdmin(authHeader)) {
+            return ResponseEntity.status(403).body("Admin access required");
+        }
+        
         List<MovieRequest> requests = movieRequestService.getAllRequests();
         return ResponseEntity.ok(requests);
     }
 
     @PostMapping("/{requestId}/approve")
-    public ResponseEntity<MovieRequest> approveRequest(
+    public ResponseEntity<?> approveRequest(
             @PathVariable Long requestId,
             @RequestHeader("Authorization") String authHeader) {
+        
+        if (!isAdmin(authHeader)) {
+            return ResponseEntity.status(403).body("Admin access required");
+        }
         
         String token = authHeader.substring(7);
         Long adminUserId = jwtUtil.getUserIdFromToken(token);
@@ -71,10 +93,14 @@ public class MovieRequestController {
     }
 
     @PostMapping("/{requestId}/reject")
-    public ResponseEntity<MovieRequest> rejectRequest(
+    public ResponseEntity<?> rejectRequest(
             @PathVariable Long requestId,
             @RequestParam String reason,
             @RequestHeader("Authorization") String authHeader) {
+        
+        if (!isAdmin(authHeader)) {
+            return ResponseEntity.status(403).body("Admin access required");
+        }
         
         String token = authHeader.substring(7);
         Long adminUserId = jwtUtil.getUserIdFromToken(token);

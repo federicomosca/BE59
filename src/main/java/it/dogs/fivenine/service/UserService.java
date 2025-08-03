@@ -30,4 +30,6 @@ public interface UserService {
     Set<Collection> getCollections(LoginDTO dto);
     Optional<User> findByEmail(String newEmail);
     User save(User user);
+    AccountActionResult makeAdmin(Long targetUserId, Long adminUserId);
+    boolean isUserAdmin(Long userId);
 }

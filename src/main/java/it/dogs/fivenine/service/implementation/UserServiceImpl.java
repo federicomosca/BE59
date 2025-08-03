@@ -3,6 +3,7 @@ package it.dogs.fivenine.service.implementation;
 import org.modelmapper.ModelMapper;
 import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.domain.User;
+import it.dogs.fivenine.model.domain.UserRole;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
 import it.dogs.fivenine.model.result.AccountActionError;
@@ -216,5 +217,37 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         return repository.save(user);
+    }
+
+    @Override
+    public AccountActionResult makeAdmin(Long targetUserId, Long adminUserId) {
+        // Check if requester is admin
+        User adminUser = repository.findById(adminUserId).orElse(null);
+        if (adminUser == null || !adminUser.isAdmin()) {
+            auditService.logAccountAction(adminUserId, "MAKE_ADMIN_FAILED", null, null, false);
+            return AccountActionResult.failure("MAKE_ADMIN", AccountActionError.OPERATION_FAILED, "Insufficient privileges");
+        }
+
+        User targetUser = repository.findById(targetUserId).orElse(null);
+        if (targetUser == null) {
+            auditService.logAccountAction(adminUserId, "MAKE_ADMIN_FAILED", null, null, false);
+            return AccountActionResult.failure("MAKE_ADMIN", AccountActionError.USER_NOT_FOUND, "Target user not found");
+        }
+
+        if (targetUser.isAdmin()) {
+            return AccountActionResult.failure("MAKE_ADMIN", AccountActionError.OPERATION_FAILED, "User is already admin");
+        }
+
+        targetUser.setRole(UserRole.ADMIN);
+        repository.save(targetUser);
+        auditService.logAccountAction(adminUserId, "MAKE_ADMIN_SUCCESS", null, null, true);
+
+        return AccountActionResult.success("MAKE_ADMIN", "User promoted to admin successfully");
+    }
+
+    @Override
+    public boolean isUserAdmin(Long userId) {
+        User user = repository.findById(userId).orElse(null);
+        return user != null && user.isAdmin();
     }
 }

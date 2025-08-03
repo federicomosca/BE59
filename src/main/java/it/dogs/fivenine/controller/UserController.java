@@ -15,6 +15,7 @@ import it.dogs.fivenine.model.result.SignUpResult;
 import it.dogs.fivenine.service.EmailChangeService;
 import it.dogs.fivenine.service.PasswordChangeService;
 import it.dogs.fivenine.service.UserService;
+import it.dogs.fivenine.util.JwtUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,9 @@ public class UserController {
     
     @Autowired
     private PasswordChangeService passwordChangeService;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // <------------------------------ general user endpoints ------------------------------>
 
@@ -92,18 +96,31 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
-    // <------------------------------ privileged user endpoints ------------------------------>
-
-    // should create an endpoint to let admins signup and automatically receive a
-    // password for privileged actions
+    // <------------------------------ admin endpoints ------------------------------>
 
     @PostMapping("/get-all")
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<?> getUsers(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        
+        if (!userService.isUserAdmin(userId)) {
+            return ResponseEntity.status(403).body("Admin access required");
+        }
+        
+        List<User> users = userService.getUsers();
+        return ResponseEntity.ok(users);
     }
 
-    public Optional<User> getUserById(@RequestBody Long id) {
-        return userService.findById(id);
+    @PostMapping("/{targetUserId}/make-admin")
+    public ResponseEntity<AccountActionResult> makeAdmin(
+            @PathVariable Long targetUserId,
+            @RequestHeader("Authorization") String authHeader) {
+        
+        String token = authHeader.substring(7);
+        Long adminUserId = jwtUtil.getUserIdFromToken(token);
+        
+        AccountActionResult result = userService.makeAdmin(targetUserId, adminUserId);
+        return ResponseEntity.ok(result);
     }
 
 }

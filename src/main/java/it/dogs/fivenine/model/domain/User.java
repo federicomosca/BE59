@@ -17,6 +17,9 @@ public class User {
     private String password;
     private Date registrationDate;
     private Boolean active = true;
+    
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.USER;
 
     @OneToMany
     private Set<Collection> collections;
@@ -77,5 +80,19 @@ public class User {
         this.collections = collections;
     }
 
-    
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public boolean isAdmin() {
+        return role == UserRole.ADMIN;
+    }
+
+    public boolean isModerator() {
+        return role == UserRole.MODERATOR;
+    }
 }
