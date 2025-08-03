@@ -53,6 +53,7 @@ public class EmailConfirmationServiceImpl implements EmailConfirmationService {
 
             // Send email
             SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("noreply@fivenine.com");
             message.setTo(email);
             message.setSubject("Confirm your email address - Fivenine");
             message.setText("Please click the following link to confirm your email address:\n\n" +

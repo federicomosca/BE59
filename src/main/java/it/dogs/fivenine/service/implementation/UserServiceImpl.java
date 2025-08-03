@@ -98,6 +98,11 @@ public class UserServiceImpl implements UserService {
             auditService.logLoginAttempt(dto.getUsername(), null, null, false, "Account inactive");
             return LoginResult.failure(LoginError.ACCOUNT_INACTIVE, "Account is inactive");
         }
+        
+        if (!user.getEmailConfirmed()) {
+            auditService.logLoginAttempt(dto.getUsername(), null, null, false, "Email not confirmed");
+            return LoginResult.failure(LoginError.EMAIL_NOT_CONFIRMED, "Please confirm your email address before logging in");
+        }
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             auditService.logLoginAttempt(dto.getUsername(), null, null, false, "Invalid password");
@@ -222,6 +227,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByEmail(String newEmail) {
         return repository.findByEmail(newEmail);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return repository.findByUsername(username);
     }
 
     @Override

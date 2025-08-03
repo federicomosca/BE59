@@ -29,6 +29,7 @@ public interface UserService {
     AccountActionResult deleteUser(LoginDTO dto);
     Set<Collection> getCollections(LoginDTO dto);
     Optional<User> findByEmail(String newEmail);
+    User findByUsername(String username);
     User save(User user);
     AccountActionResult makeAdmin(Long targetUserId, Long adminUserId);
     boolean isUserAdmin(Long userId);

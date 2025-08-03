@@ -69,10 +69,29 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
     
-    @PostMapping("/email/confirm-registration")
+    @GetMapping("/email/confirm-registration")
     public ResponseEntity<EmailConfirmationResult> confirmEmailRegistration(@RequestParam String token) {
         EmailConfirmationResult result = emailConfirmationService.confirmEmail(token);
         return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/email/resend-confirmation")
+    public ResponseEntity<String> resendConfirmationEmail(@RequestBody LoginDTO dto) {
+        try {
+            User user = userService.findByUsername(dto.getUsername());
+            if (user == null) {
+                return ResponseEntity.badRequest().body("User not found");
+            }
+            
+            if (user.getEmailConfirmed()) {
+                return ResponseEntity.badRequest().body("Email already confirmed");
+            }
+            
+            emailConfirmationService.sendConfirmationEmail(user.getId(), user.getEmail());
+            return ResponseEntity.ok("Confirmation email sent successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to send confirmation email");
+        }
     }
     
     @PostMapping("/{userId}/password/request")
