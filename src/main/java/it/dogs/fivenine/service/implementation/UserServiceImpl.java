@@ -5,8 +5,11 @@ import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
+import it.dogs.fivenine.model.result.LoginError;
+import it.dogs.fivenine.model.result.LoginResult;
 import it.dogs.fivenine.repository.UserRepository;
 import it.dogs.fivenine.service.UserService;
+import it.dogs.fivenine.util.JwtUtil;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,10 +26,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper, JwtUtil jwtUtil) {
         this.repository = repository;
         this.modelMapper = modelMapper;
+        this.jwtUtil = jwtUtil;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -54,16 +59,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(LoginDTO dto) {
-        User u = repository.findByUsername(dto.getUsername());
+    public LoginResult login(LoginDTO dto) {
+        User user = repository.findByUsername(dto.getUsername());
         
-        if (u == null) {
-            return "ko";
+        if (user == null) {
+            return LoginResult.failure(LoginError.USER_NOT_FOUND, "User not found");
+        }
+        
+        if (!user.getActive()) {
+            return LoginResult.failure(LoginError.ACCOUNT_INACTIVE, "Account is inactive");
         }
 
-        if (passwordEncoder.matches(dto.getPassword(), u.getPassword()))
-            return "ok";
-        return "ko";
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            return LoginResult.failure(LoginError.INVALID_CREDENTIALS, "Invalid credentials");
+        }
+        
+        // Generate JWT token
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername());
+        
+        return LoginResult.success(token, user.getId(), user.getUsername());
     }
 
     @Override
@@ -97,8 +111,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public String deactivate(LoginDTO dto) {
         User u = repository.findByUsername(dto.getUsername());
-        if (u.getPassword().equals(dto.getPassword())) {
+        if (u != null && passwordEncoder.matches(dto.getPassword(), u.getPassword())) {
             u.setActive(false);
+            repository.save(u);
             return "You successfully deactivated";
         }
         return "Wrong password.";
@@ -106,8 +121,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int deleteUser(LoginDTO dto) {
-        User u = repository.findByUsernameAndPassword(dto.getUsername(), dto.getPassword());
-        if (u != null) {
+        User u = repository.findByUsername(dto.getUsername());
+        if (u != null && passwordEncoder.matches(dto.getPassword(), u.getPassword())) {
             repository.delete(u);
             return 0;
         }
@@ -124,5 +139,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByEmail(String newEmail) {
         return repository.findByEmail(newEmail);
+    }
+
+    @Override
+    public User save(User user) {
+        return repository.save(user);
     }
 }

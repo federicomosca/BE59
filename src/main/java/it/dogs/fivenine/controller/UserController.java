@@ -3,10 +3,15 @@ package it.dogs.fivenine.controller;
 import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.EmailUpdateDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
+import it.dogs.fivenine.model.dto.UserDTOs.PasswordChangeDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
 import it.dogs.fivenine.model.result.EmailChangeResult;
 import it.dogs.fivenine.model.result.EmailConfirmationResult;
+import it.dogs.fivenine.model.result.LoginResult;
+import it.dogs.fivenine.model.result.PasswordChangeResult;
+import it.dogs.fivenine.model.result.PasswordConfirmationResult;
 import it.dogs.fivenine.service.EmailChangeService;
+import it.dogs.fivenine.service.PasswordChangeService;
 import it.dogs.fivenine.service.UserService;
 
 import java.util.List;
@@ -25,6 +30,9 @@ public class UserController {
     
     @Autowired
     private EmailChangeService emailChangeService;
+    
+    @Autowired
+    private PasswordChangeService passwordChangeService;
 
     // <------------------------------ general user endpoints ------------------------------>
 
@@ -33,9 +41,10 @@ public class UserController {
         return userService.signUp(dto);
     }
 
-    @GetMapping("/login")
-    public String login(@RequestBody LoginDTO dto) {
-        return userService.login(dto);
+    @PostMapping("/login")
+    public ResponseEntity<LoginResult> login(@RequestBody LoginDTO dto) {
+        LoginResult result = userService.login(dto);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/{userId}/email/request")
@@ -48,6 +57,33 @@ public class UserController {
     public ResponseEntity<EmailConfirmationResult> confirmEmailChange(@RequestParam String token) {
         EmailConfirmationResult result = emailChangeService.confirmEmailChange(token);
         return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/{userId}/password/request")
+    public ResponseEntity<PasswordChangeResult> requestPasswordChange(@PathVariable Long userId, @RequestBody PasswordChangeDTO dto) {
+        PasswordChangeResult result = passwordChangeService.requestPasswordChange(userId, dto.getCurrentPassword(), dto.getNewPassword());
+        return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/password/confirm")
+    public ResponseEntity<PasswordConfirmationResult> confirmPasswordChange(@RequestParam String token) {
+        PasswordConfirmationResult result = passwordChangeService.confirmPasswordChange(token);
+        return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/deactivate")
+    public ResponseEntity<String> deactivateAccount(@RequestBody LoginDTO dto) {
+        String result = userService.deactivate(dto);
+        return ResponseEntity.ok(result);
+    }
+    
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteAccount(@RequestBody LoginDTO dto) {
+        int result = userService.deleteUser(dto);
+        if (result == 0) {
+            return ResponseEntity.ok("Account deleted successfully");
+        }
+        return ResponseEntity.badRequest().body("Failed to delete account");
     }
 
     // <------------------------------ privileged user endpoints ------------------------------>

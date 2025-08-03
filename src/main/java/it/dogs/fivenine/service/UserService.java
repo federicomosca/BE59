@@ -10,13 +10,14 @@ import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.domain.User;
 import it.dogs.fivenine.model.dto.UserDTOs.LoginDTO;
 import it.dogs.fivenine.model.dto.UserDTOs.SignUpDTO;
+import it.dogs.fivenine.model.result.LoginResult;
 
 
 @Service
 public interface UserService {
 
     Long signUp(SignUpDTO dto);
-    String login(LoginDTO dto);
+    LoginResult login(LoginDTO dto);
     List<User> getUsers();
     Optional<User> findById(Long id);
     void updateEmail(Long userId, String newEmail);
@@ -25,4 +26,5 @@ public interface UserService {
     int deleteUser(LoginDTO dto);
     Set<Collection> getCollections(LoginDTO dto);
     Optional<User> findByEmail(String newEmail);
+    User save(User user);
 }
