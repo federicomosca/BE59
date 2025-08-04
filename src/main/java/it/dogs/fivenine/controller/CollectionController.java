@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -41,7 +42,7 @@ public class CollectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createCollection(@RequestBody CollectionDTO collectionDTO, HttpServletRequest request) {
+    public ResponseEntity<Void> createCollection(@Valid @RequestBody CollectionDTO collectionDTO, HttpServletRequest request) {
         Long userId = authUtils.getUserIdFromRequest(request);
         if (userId != null) {
             collectionService.createCollection(collectionDTO, userId);
@@ -51,7 +52,7 @@ public class CollectionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCollection(@PathVariable Long id, @RequestBody CollectionDTO collectionDTO) {
+    public ResponseEntity<Void> updateCollection(@PathVariable Long id, @Valid @RequestBody CollectionDTO collectionDTO) {
         collectionService.updateCollection(id, collectionDTO);
         return ResponseEntity.ok().build();
     }

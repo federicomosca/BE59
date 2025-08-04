@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -46,13 +47,13 @@ public class UserController {
     // <------------------------------ general user endpoints ------------------------------>
 
     @PostMapping("/signUp")
-    public ResponseEntity<SignUpResult> signUp(@RequestBody SignUpDTO dto) {
+    public ResponseEntity<SignUpResult> signUp(@Valid @RequestBody SignUpDTO dto) {
         SignUpResult result = userService.signUp(dto);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResult> login(@RequestBody LoginDTO dto) {
+    public ResponseEntity<LoginResult> login(@Valid @RequestBody LoginDTO dto) {
         LoginResult result = userService.login(dto);
         return ResponseEntity.ok(result);
     }
