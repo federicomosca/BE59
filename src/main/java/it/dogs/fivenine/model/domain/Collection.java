@@ -63,7 +63,4 @@ public class Collection {
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
     }
-
-    
-
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.stereotype.Service;
 
 import it.dogs.fivenine.model.domain.Collection;
 import it.dogs.fivenine.model.domain.User;
@@ -15,7 +14,6 @@ import it.dogs.fivenine.model.result.LoginResult;
 import it.dogs.fivenine.model.result.SignUpResult;
 
 
-@Service
 public interface UserService {
 
     SignUpResult signUp(SignUpDTO dto);

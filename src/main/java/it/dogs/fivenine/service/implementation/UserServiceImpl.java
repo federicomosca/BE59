@@ -17,10 +17,10 @@ import it.dogs.fivenine.service.EmailConfirmationService;
 import it.dogs.fivenine.service.UserService;
 import it.dogs.fivenine.util.JwtUtil;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,19 +30,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final ModelMapper modelMapper;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuditService auditService;
     private final EmailConfirmationService emailConfirmationService;
 
-    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper, JwtUtil jwtUtil, 
-                          AuditService auditService, EmailConfirmationService emailConfirmationService) {
+    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper, PasswordEncoder passwordEncoder,
+                          JwtUtil jwtUtil, AuditService auditService, EmailConfirmationService emailConfirmationService) {
         this.repository = repository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.auditService = auditService;
         this.emailConfirmationService = emailConfirmationService;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
             
             // Set registration date
-            user.setRegistrationDate(new Date());
+            user.setRegistrationDate(LocalDateTime.now());
             
             User savedUser = repository.save(user);
             auditService.logUserAction(savedUser.getId(), "SIGNUP_SUCCESS", null, null, "User registered successfully", true);
@@ -137,8 +137,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public String changePassword(LoginDTO dto, String newPassword) {
         User u = repository.findByUsername(dto.getUsername());
-        if (u.getPassword().equals(dto.getPassword())) {
-            dto.setPassword(newPassword);
+        if (u != null && passwordEncoder.matches(dto.getPassword(), u.getPassword())) {
+            u.setPassword(passwordEncoder.encode(newPassword));
+            repository.save(u);
             return "ok";
         }
         return "ko";
@@ -220,8 +221,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<Collection> getCollections(LoginDTO dto) {
         User u = repository.findByUsername(dto.getUsername());
-        Set<Collection> c = u.getCollections();
-        return c;
+        return u != null ? u.getCollections() : null;
     }
 
     @Override

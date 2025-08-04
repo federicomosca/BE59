@@ -13,7 +13,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long JWT_EXPIRATION = 86400000; // 24 hours in milliseconds
+    private static final long JWT_EXPIRATION = 86400000; // 24 hours in milliseconds
 
     public String generateToken(Long userId, String username) {
         Date now = new Date();

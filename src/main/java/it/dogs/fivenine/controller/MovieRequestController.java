@@ -7,7 +7,6 @@ import it.dogs.fivenine.service.MovieRequestService;
 import it.dogs.fivenine.service.UserService;
 import it.dogs.fivenine.util.JwtUtil;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +16,16 @@ import java.util.List;
 @RequestMapping("/movie-requests")
 public class MovieRequestController {
 
-    @Autowired
-    private MovieRequestService movieRequestService;
-    
-    @Autowired
-    private UserService userService;
-    
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final MovieRequestService movieRequestService;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
+
+    public MovieRequestController(MovieRequestService movieRequestService, 
+                                 UserService userService, JwtUtil jwtUtil) {
+        this.movieRequestService = movieRequestService;
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
+    }
 
     private boolean isAdmin(String authHeader) {
         String token = authHeader.substring(7);

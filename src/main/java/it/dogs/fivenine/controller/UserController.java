@@ -20,7 +20,6 @@ import it.dogs.fivenine.util.JwtUtil;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,20 +27,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-    
-    @Autowired
-    private EmailChangeService emailChangeService;
-    
-    @Autowired
-    private EmailConfirmationService emailConfirmationService;
-    
-    @Autowired
-    private PasswordChangeService passwordChangeService;
-    
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final UserService userService;
+    private final EmailChangeService emailChangeService;
+    private final EmailConfirmationService emailConfirmationService;
+    private final PasswordChangeService passwordChangeService;
+    private final JwtUtil jwtUtil;
+
+    public UserController(UserService userService, EmailChangeService emailChangeService, 
+                         EmailConfirmationService emailConfirmationService, 
+                         PasswordChangeService passwordChangeService, JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.emailChangeService = emailChangeService;
+        this.emailConfirmationService = emailConfirmationService;
+        this.passwordChangeService = passwordChangeService;
+        this.jwtUtil = jwtUtil;
+    }
 
     // <------------------------------ general user endpoints ------------------------------>
 

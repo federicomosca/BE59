@@ -1,7 +1,7 @@
 package it.dogs.fivenine.model.domain;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -15,14 +15,14 @@ public class User {
     private String username;
     private String email;
     private String password;
-    private Date registrationDate;
+    private LocalDateTime registrationDate;
     private Boolean active = true;
     private Boolean emailConfirmed = false;
     
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Collection> collections;
 
     public Long getId() {
@@ -57,11 +57,11 @@ public class User {
         this.password = password;
     }
 
-    public Date getRegistrationDate() {
+    public LocalDateTime getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
+    public void setRegistrationDate(LocalDateTime registrationDate) {
         this.registrationDate = registrationDate;
     }
 
