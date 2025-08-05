@@ -4,7 +4,9 @@
       "Bash(mvn clean:*)",
       "Bash(./mvnw:*)",
       "mcp__ide__getDiagnostics",
-      "Bash(.mvnw.cmd clean compile -q)"
+      "Bash(.mvnw.cmd clean compile -q)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)"
     ],
     "deny": []
   }
