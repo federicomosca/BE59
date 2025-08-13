@@ -6,7 +6,23 @@
       "mcp__ide__getDiagnostics",
       "Bash(.mvnw.cmd clean compile -q)",
       "Bash(curl:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(taskkill:*)",
+      "Bash(rm:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(mkdir:*)",
+      "Bash(xcopy:*)",
+      "Bash(robocopy:*)",
+      "Bash(copy:*)",
+      "Bash(cp:*)",
+      "Bash(chmod:*)",
+      "Bash(java:*)",
+      "Bash(mvn package:*)",
+      "Bash(run-fivenine.bat)",
+      "Bash(cmd /c:*)",
+      "Bash(tasklist:*)",
+      "Bash(powershell:*)"
     ],
     "deny": []
   }

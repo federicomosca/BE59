@@ -42,6 +42,9 @@ public class CollectionServiceImpl implements CollectionService {
             Collection collection = modelMapper.map(dto, Collection.class);
             collection.setUser(user.get());
             collection.setMovies(new ArrayList<>());
+            if (collection.getVisibility() == null) {
+                collection.setVisibility(it.dogs.fivenine.model.domain.enums.CollectionVisibility.PRIVATE);
+            }
             collectionRepository.save(collection);
         }
     }
@@ -59,6 +62,8 @@ public class CollectionServiceImpl implements CollectionService {
             Collection collection = existingCollection.get();
             collection.setName(dto.getName());
             collection.setType(dto.getType());
+            collection.setDescription(dto.getDescription());
+            collection.setVisibility(dto.getVisibility());
             collectionRepository.save(collection);
         }
     }

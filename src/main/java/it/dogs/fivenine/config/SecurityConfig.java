@@ -51,8 +51,13 @@ public class SecurityConfig {
             .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/users/register", "/users/login", "/users/confirm-email").permitAll()
+                .requestMatchers("/users/signUp", "/users/login", "/users/confirmEmail", "/users/confirmPassword").permitAll()
                 .requestMatchers("/movies/**").permitAll()
+                .requestMatchers("/connections/**").authenticated()
+                .requestMatchers("/messages/**").authenticated()
+                .requestMatchers("/notifications/**").authenticated()
+                .requestMatchers("/recommendations/**").authenticated()
+                .requestMatchers("/collection-shares/**").authenticated()
                 .anyRequest().authenticated()
             );
 

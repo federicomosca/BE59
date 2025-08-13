@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 import it.dogs.fivenine.model.domain.sets.CollectionType;
+import it.dogs.fivenine.model.domain.enums.CollectionVisibility;
 
 @Entity
 @Table(name = "collections")
@@ -14,6 +15,14 @@ public class Collection {
     private Long id;
 
     private String name;
+    
+    @Column(columnDefinition = "TEXT")
+    private String description;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CollectionVisibility visibility = CollectionVisibility.PRIVATE;
+    
     private CollectionType type;
     
     @ManyToOne
@@ -62,5 +71,21 @@ public class Collection {
 
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public CollectionVisibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(CollectionVisibility visibility) {
+        this.visibility = visibility;
     }
 }
